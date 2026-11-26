@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurePay BD</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-        <script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
-    
+    <script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
         .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
@@ -39,7 +38,6 @@
         <small>১০০০ কয়েন = ১০ টাকা (বিকাশ / নগদ)</small>
     </div>
 
-    <!-- Home / Tasks Section -->
     <div id="homeTab">
         <div class="card">
             <div class="task-row">
@@ -77,19 +75,17 @@
         </div>
     </div>
 
-    <!-- Referral Section -->
     <div id="referTab" class="hidden">
         <div class="card" style="text-align:center;">
             <h3>👥 বন্ধুদের রেফার করুন</h3>
             <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে জিতে নিন +১০০ কয়েন!</p>
-            <p><small>আপনার নিচের রেফার লিংকটি কপি করে বন্ধুদের শেয়ার করুন। বন্ধু আপনার লিংকে ক্লিক করে বটে জয়েন করলেই আপনি ও আপনার বন্ধু বোনাস পাবেন।</small></p>
+            <p><small>আপনার নিচের রেফার লিংকটি কপি করে বন্ধুদের শেয়ার করুন। বন্ধু আপনার লিংকে ক্লিক করে বটে জয়েন করলেই বোনাস পাবেন।</small></p>
             <input type="text" id="refLink" readonly value="লোড হচ্ছে...">
             <button class="btn btn-blue" onclick="copyRef()">📋 রেফার লিংক কপি করুন</button>
             <button class="btn btn-primary" onclick="shareRef()">📤 টেলিগ্রামে শেয়ার করুন</button>
         </div>
     </div>
 
-    <!-- Withdraw Section -->
     <div id="withdrawTab" class="hidden">
         <div class="card">
             <h3>💸 টাকা উইথড্র করুন</h3>
@@ -104,7 +100,6 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="nav">
         <button id="navHome" class="active" onclick="switchTab('home')">🏠 কাজসমূহ</button>
         <button id="navRefer" onclick="switchTab('refer')">👥 রেফার</button>
@@ -130,34 +125,8 @@
             document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
         }
 
-        // রেফারেল লিংক তৈরি ও চেক করা
-        const myRefLink = `https://t.me{BOT_USERNAME}?start=${userId}`;
+        const myRefLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
         document.getElementById('refLink').value = myRefLink;
-
-        const startParam = tg.initDataUnsafe ? tg.initDataUnsafe.start_param : null;
-        if (startParam && startParam != userId && !localStorage.getItem('ref_claimed')) {
-            localStorage.setItem('ref_claimed', 'true');
-            coins += 100;
-            updateUI();
-            alert("🎉 রেফার লিংকে জয়েন করার জন্য আপনি +১০০ কয়েন বোনাস পেয়েছেন!");
-            fetch(`https://telegram.org{BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: ADMIN_ID, text: `👥 নতুন রেফার সম্পন্ন!\nনতুন ইউজার: ${userLabel}\nরেফারার আইডি: ${startParam} (+১০০ কয়েন)` })
-            });
-        }
-
-        function copyRef() {
-            const copyText = document.getElementById("refLink");
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
-            alert("রেফার লিংক কপি হয়েছে! এখন বন্ধুদের শেয়ার করুন।");
-        }
-
-        function shareRef() {
-            const shareText = encodeURIComponent("সহজ কাজ ও অ্যাড দেখে বিকাশ/নগদে আয় করুন! জয়েন করলেই ১০০ কয়েন বোনাস:");
-            tg.openTelegramLink(`https://t.me{encodeURIComponent(myRefLink)}&text=${shareText}`);
-        }
 
         function updateUI() {
             document.getElementById('coins').innerText = coins;
@@ -171,13 +140,24 @@
             document.getElementById('mathAnswer').value = '';
         }
 
+        function copyRef() {
+            const copyText = document.getElementById("refLink");
+            copyText.select();
+            document.execCommand("copy");
+            alert("রেফার লিংক কপি হয়েছে!");
+        }
+
+        function shareRef() {
+            tg.openTelegramLink("https://t.meshare/url?url=" + encodeURIComponent(myRefLink));
+        }
+
         function fallbackAd(reward) {
             const overlay = document.getElementById('adOverlay');
             const timerText = document.getElementById('adTimerText');
             overlay.style.display = 'flex';
             let sec = 10;
             timerText.innerText = "অপেক্ষা করুন: " + sec + " সেকেন্ড";
-            const interval = setInterval(() => {
+            const interval = setInterval(function() {
                 sec--;
                 timerText.innerText = "অপেক্ষা করুন: " + sec + " সেকেন্ড";
                 if (sec <= 0) {
@@ -192,11 +172,11 @@
 
         function watchAd(reward) {
             if (typeof show_12356364 === 'function') {
-                show_12356364().then(() => {
+                show_12356364().then(function() {
                     coins += reward;
                     updateUI();
-                    alert("অভিনন্দন! অ্যাড দেখার জন্য +" + reward + " কয়েন যোগ হয়েছে।");
-                }).catch(() => {
+                    alert("অভিনন্দন! +" + reward + " কয়েন যোগ হয়েছে।");
+                }).catch(function() {
                     fallbackAd(reward);
                 });
             } else {
@@ -207,3 +187,34 @@
         function checkMath() {
             const ans = parseInt(document.getElementById('mathAnswer').value);
             if (ans === (num1 + num2)) {
+                coins += 5;
+                updateUI();
+                alert("সঠিক উত্তর! +৫ কয়েন যোগ হয়েছে।");
+                generateMath();
+            } else {
+                alert("ভুল উত্তর! আবার চেষ্টা করুন।");
+            }
+        }
+
+        function channelTask() {
+            tg.openTelegramLink("https://t.mesurepaybd_bot");
+            setTimeout(function() {
+                coins += 20;
+                updateUI();
+                alert("চ্যানেল টাস্ক সম্পন্ন! +২০ কয়েন যোগ হয়েছে।");
+            }, 3000);
+        }
+
+        function playGame() {
+            const bonus = Math.floor(Math.random() * 10) + 5;
+            coins += bonus;
+            updateUI();
+            alert("অভিনন্দন! গেম খেলে আপনি " + bonus + " কয়েন জিতেছেন!");
+        }
+
+        function withdraw() {
+            const method = document.getElementById('method').value;
+            const phone = document.getElementById('phone').value;
+            const amount = parseInt(document.getElementById('amount').value);
+
+            if (!phone || phone.length < 11) return alert("সঠিক ১১ ডিজিটের নম্বর দিন!");
