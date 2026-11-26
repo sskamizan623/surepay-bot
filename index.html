@@ -8,8 +8,8 @@
     <script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
-        .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .header { text-align: center; background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
+        .header { text-align: center; background: #1d4ed8; }
         .balance { font-size: 32px; font-weight: bold; color: #fbbf24; margin: 5px 0; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; }
         .btn-primary { background: #10b981; color: white; }
@@ -27,9 +27,8 @@
 <body>
 
     <div id="adOverlay">
-        <h2 style="color:#fbbf24;">📺 বিজ্ঞাপন চলছে...</h2>
+        <h2 style="color:#fbbf24;">বিজ্ঞাপন চলছে...</h2>
         <p id="adTimerText" style="font-size:20px;">অপেক্ষা করুন: ১০ সেকেন্ড</p>
-        <small style="color:#94a3b8;">সম্পূর্ণ দেখলে স্বয়ংক্রিয়ভাবে কয়েন যোগ হবে</small>
     </div>
 
     <div class="card header">
@@ -41,20 +40,20 @@
     <div id="homeTab">
         <div class="card">
             <div class="task-row">
-                <div><b>📺 সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+১৫ কয়েন)</small></div>
+                <div><b>সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+১৫ কয়েন)</small></div>
                 <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="watchAd(15)">দেখুন</button>
             </div>
         </div>
 
         <div class="card">
             <div class="task-row">
-                <div><b>🎬 ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে আয় (+১০ কয়েন)</small></div>
+                <div><b>ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে আয় (+১০ কয়েন)</small></div>
                 <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="watchAd(10)">চালান</button>
             </div>
         </div>
 
         <div class="card">
-            <b>🧮 সহজ অংক সমাধান (+৫ কয়েন)</b>
+            <b>সহজ অংক সমাধান (+৫ কয়েন)</b>
             <p id="mathQuestion" style="font-size:18px; margin:8px 0;">৫ + ৫ = কত?</p>
             <input type="number" id="mathAnswer" placeholder="সঠিক উত্তর লিখুন">
             <button class="btn btn-warn" onclick="checkMath()">উত্তর জমা দিন</button>
@@ -62,14 +61,14 @@
 
         <div class="card">
             <div class="task-row">
-                <div><b>📢 টেলিগ্রাম চ্যানেল টাস্ক</b><br><small>চ্যানেলের ভিডিওতে লাইক ও কমেন্ট (+২০ কয়েন)</small></div>
+                <div><b>টেলিগ্রাম চ্যানেল টাস্ক</b><br><small>চ্যানেলে জয়েন ও ভিজিট (+২০ কয়েন)</small></div>
                 <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="channelTask()">যান</button>
             </div>
         </div>
 
         <div class="card">
             <div class="task-row">
-                <div><b>🎮 লাকি বক্স গেম</b><br><small>বক্স খুলে বোনাস জিতুন (+১০ কয়েন)</small></div>
+                <div><b>লাকি বক্স গেম</b><br><small>বক্স খুলে বোনাস জিতুন (+১০ কয়েন)</small></div>
                 <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="playGame()">খেলুন</button>
             </div>
         </div>
@@ -77,18 +76,16 @@
 
     <div id="referTab" class="hidden">
         <div class="card" style="text-align:center;">
-            <h3>👥 বন্ধুদের রেফার করুন</h3>
-            <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে জিতে নিন +১০০ কয়েন!</p>
-            <p><small>আপনার নিচের রেফার লিংকটি কপি করে বন্ধুদের শেয়ার করুন।</small></p>
-            <input type="text" id="refLink" readonly value="লোড হচ্ছে...">
-            <button class="btn btn-blue" onclick="copyRef()">📋 রেফার লিংক কপি করুন</button>
-            <button class="btn btn-primary" onclick="shareRef()">📤 টেলিগ্রামে শেয়ার করুন</button>
+            <h3>বন্ধুদের রেফার করুন</h3>
+            <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে +১০০ কয়েন!</p>
+            <input type="text" id="refLink" readonly>
+            <button class="btn btn-blue" onclick="copyRef()">রেফার লিংক কপি করুন</button>
         </div>
     </div>
 
     <div id="withdrawTab" class="hidden">
         <div class="card">
-            <h3>💸 টাকা উইথড্র করুন</h3>
+            <h3>টাকা উইথড্র করুন</h3>
             <p><small>সর্বনিম্ন উইথড্র: ১০০০ কয়েন (১০ টাকা)</small></p>
             <select id="method">
                 <option value="bKash">বিকাশ (bKash)</option>
@@ -101,33 +98,28 @@
     </div>
 
     <div class="nav">
-        <button id="navHome" class="active" onclick="switchTab('home')">🏠 কাজসমূহ</button>
-        <button id="navRefer" onclick="switchTab('refer')">👥 রেফার</button>
-        <button id="navWithdraw" onclick="switchTab('withdraw')">💳 উইথড্র</button>
+        <button id="navHome" class="active" onclick="switchTab('home')">কাজসমূহ</button>
+        <button id="navRefer" onclick="switchTab('refer')">রেফার</button>
+        <button id="navWithdraw" onclick="switchTab('withdraw')">উইথড্র</button>
     </div>
 
     <script>
         var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
         if (tg) { tg.expand(); }
 
-        var BOT_USERNAME = "surepaybd_bot";
-        var BOT_TOKEN = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
-        var ADMIN_ID = "8577063798";
-        var CHANNEL_URL = "https:" + "//t.me/sskamizan1";
-
         var coins = parseInt(localStorage.getItem('surepay_coins')) || 0;
         var num1 = 5, num2 = 5;
         var userId = "guest";
-        var userLabel = "Unknown User";
+        var userLabel = "Unknown";
 
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             userId = tg.initDataUnsafe.user.id;
-            userLabel = tg.initDataUnsafe.user.first_name + " (ID: " + userId + ")";
+            userLabel = tg.initDataUnsafe.user.first_name + " (" + userId + ")";
             document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
         }
 
-        var myRefLink = "https:" + "//t.me/" + BOT_USERNAME + "?start=" + userId;
-        document.getElementById('refLink').value = myRefLink;
+        var p = ["https:", "", "t.me", "surepaybd_bot?start=" + userId];
+        document.getElementById('refLink').value = p.join("/");
 
         function updateUI() {
             document.getElementById('coins').innerText = coins;
@@ -146,11 +138,6 @@
             copyText.select();
             document.execCommand("copy");
             alert("রেফার লিংক কপি হয়েছে!");
-        }
-
-        function shareRef() {
-            var shareUrl = "https:" + "//t.me/share/url?url=" + encodeURIComponent(myRefLink);
-            if (tg) { tg.openTelegramLink(shareUrl); } else { window.open(shareUrl); }
         }
 
         function fallbackAd(reward) {
@@ -199,7 +186,8 @@
         }
 
         function channelTask() {
-            if (tg) { tg.openTelegramLink(CHANNEL_URL); } else { window.open(CHANNEL_URL); }
+            var ch = ["https:", "", "t.me", "sskamizan1"].join("/");
+            if (tg) { tg.openTelegramLink(ch); } else { window.open(ch); }
             setTimeout(function() {
                 coins += 20;
                 updateUI();
@@ -217,3 +205,19 @@
         function withdraw() {
             var method = document.getElementById('method').value;
             var phone = document.getElementById('phone').value;
+            var amount = parseInt(document.getElementById('amount').value);
+
+            if (!phone || phone.length < 11) return alert("সঠিক ১১ ডিজিটের নম্বর দিন!");
+            if (!amount || amount < 1000) return alert("সর্বনিম্ন ১০০০ কয়েন উইথড্র করতে পারবেন!");
+            if (amount > coins) return alert("পর্যাপ্ত কয়েন নেই!");
+
+            coins -= amount;
+            updateUI();
+
+            var tk = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
+            var api = ["https:", "", "api.telegram.org", "bot" + tk, "sendMessage"].join("/");
+            var msg = "উইথড্র রিকোয়েস্ট!\nইউজার: " + userLabel + "\nমাধ্যম: " + method + "\nনম্বর: " + phone + "\nকয়েন: " + amount;
+
+            fetch(api, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
