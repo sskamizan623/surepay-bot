@@ -4,19 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurePay BD</title>
-    <script>
-        (function() {
-            var s1 = document.createElement('script');
-            s1.src = ["https:", "", "telegram.org", "js", "telegram-web-app.js"].join("/");
-            document.head.appendChild(s1);
-
-            var s2 = document.createElement('script');
-            s2.src = ["https:", "", "libtl.com", "sdk.js"].join("/");
-            s2.setAttribute("data-zone", "12356364");
-            s2.setAttribute("data-sdk", "show_12356364");
-            document.head.appendChild(s2);
-        })();
-    </script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
         .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
@@ -38,48 +27,48 @@
 <body>
 
     <div id="adOverlay">
-        <h2 style="color:#fbbf24;">বিজ্ঞাপন চলছে...</h2>
-        <p id="adTimerText" style="font-size:20px;">অপেক্ষা করুন: ১০ সেকেন্ড</p>
+        <h2 style="color:#fbbf24;">Ad is Playing...</h2>
+        <p id="adTimerText" style="font-size:20px;">Wait: 10s</p>
     </div>
 
     <div class="card header">
-        <div id="userName">স্বাগতম, ইউজার!</div>
-        <div class="balance"><span id="coins">0</span> কয়েন</div>
-        <small>১০০০ কয়েন = ১০ টাকা (বিকাশ / নগদ)</small>
+        <div id="userName">Welcome, User!</div>
+        <div class="balance"><span id="coins">0</span> Coins</div>
+        <small>1000 Coins = 10 Taka (bKash / Nagad)</small>
     </div>
 
     <div id="homeTab">
         <div class="card">
             <div class="task-row">
-                <div><b>সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+১৫ কয়েন)</small></div>
+                <div><b>সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+15 Coins)</small></div>
                 <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="watchAd(15)">দেখুন</button>
             </div>
         </div>
 
         <div class="card">
             <div class="task-row">
-                <div><b>ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে আয় (+১০ কয়েন)</small></div>
+                <div><b>ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে আয় (+10 Coins)</small></div>
                 <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="watchAd(10)">চালান</button>
             </div>
         </div>
 
         <div class="card">
-            <b>সহজ অংক সমাধান (+৫ কয়েন)</b>
-            <p id="mathQuestion" style="font-size:18px; margin:8px 0;">৫ + ৫ = কত?</p>
+            <b>সহজ অংক সমাধান (+5 Coins)</b>
+            <p id="mathQuestion" style="font-size:18px; margin:8px 0;">5 + 5 = ?</p>
             <input type="number" id="mathAnswer" placeholder="সঠিক উত্তর লিখুন">
             <button class="btn btn-warn" onclick="checkMath()">উত্তর জমা দিন</button>
         </div>
 
         <div class="card">
             <div class="task-row">
-                <div><b>টেলিগ্রাম চ্যানেল টাস্ক</b><br><small>চ্যানেলে জয়েন ও ভিজিট (+২০ কয়েন)</small></div>
+                <div><b>টেলিগ্রাম চ্যানেল টাস্ক</b><br><small>চ্যানেলে জয়েন ও ভিজিট (+20 Coins)</small></div>
                 <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="channelTask()">যান</button>
             </div>
         </div>
 
         <div class="card">
             <div class="task-row">
-                <div><b>লাকি বক্স গেম</b><br><small>বক্স খুলে বোনাস জিতুন (+১০ কয়েন)</small></div>
+                <div><b>লাকি বক্স গেম</b><br><small>বক্স খুলে বোনাস জিতুন (+10 Coins)</small></div>
                 <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="playGame()">খেলুন</button>
             </div>
         </div>
@@ -88,7 +77,7 @@
     <div id="referTab" class="hidden">
         <div class="card" style="text-align:center;">
             <h3>বন্ধুদের রেফার করুন</h3>
-            <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে +১০০ কয়েন!</p>
+            <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে +100 Coins!</p>
             <input type="text" id="refLink" readonly>
             <button class="btn btn-blue" onclick="copyRef()">রেফার লিংক কপি করুন</button>
         </div>
@@ -97,7 +86,7 @@
     <div id="withdrawTab" class="hidden">
         <div class="card">
             <h3>টাকা উইথড্র করুন</h3>
-            <p><small>সর্বনিম্ন উইথড্র: ১০০০ কয়েন (১০ টাকা)</small></p>
+            <p><small>সর্বনিম্ন উইথড্র: 1000 Coins (10 Taka)</small></p>
             <select id="method">
                 <option value="bKash">বিকাশ (bKash)</option>
                 <option value="Nagad">নগদ (Nagad)</option>
@@ -116,39 +105,33 @@
 
     <script>
         var coins = 0;
-        try { coins = parseInt(localStorage.getItem('surepay_coins')) || 0; } catch(e) { coins = 0; }
-
-        var num1 = 5, num2 = 5;
+        var num1 = 5;
+        var num2 = 5;
         var userId = "guest";
-        var userLabel = "Unknown";
+        var userLabel = "User";
 
-        function initTg() {
-            try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    var tg = window.Telegram.WebApp;
-                    tg.expand();
-                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                        userId = tg.initDataUnsafe.user.id;
-                        userLabel = tg.initDataUnsafe.user.first_name + " (" + userId + ")";
-                        document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
-                        document.getElementById('refLink').value = ["https:", "", "t.me", "surepaybd_bot?start=" + userId].join("/");
-                    }
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                var tg = window.Telegram.WebApp;
+                tg.expand();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    userId = tg.initDataUnsafe.user.id;
+                    userLabel = tg.initDataUnsafe.user.first_name + " (" + userId + ")";
+                    document.getElementById('userName').innerText = "Welcome, " + tg.initDataUnsafe.user.first_name;
                 }
-            } catch(e) {}
-        }
+            }
+        } catch(e) {}
 
         document.getElementById('refLink').value = ["https:", "", "t.me", "surepaybd_bot?start=" + userId].join("/");
-        setTimeout(initTg, 1000);
 
         function updateUI() {
             document.getElementById('coins').innerText = coins;
-            try { localStorage.setItem('surepay_coins', coins); } catch(e) {}
         }
 
         function generateMath() {
             num1 = Math.floor(Math.random() * 15) + 1;
             num2 = Math.floor(Math.random() * 15) + 1;
-            document.getElementById('mathQuestion').innerText = num1 + " + " + num2 + " = কত?";
+            document.getElementById('mathQuestion').innerText = num1 + " + " + num2 + " = ?";
             document.getElementById('mathAnswer').value = '';
         }
 
@@ -156,7 +139,7 @@
             var copyText = document.getElementById("refLink");
             copyText.select();
             document.execCommand("copy");
-            alert("রেফার লিংক কপি হয়েছে!");
+            alert("Referral Link Copied!");
         }
 
         function fallbackAd(reward) {
@@ -164,16 +147,16 @@
             var timerText = document.getElementById('adTimerText');
             overlay.style.display = 'flex';
             var sec = 10;
-            timerText.innerText = "অপেক্ষা করুন: " + sec + " সেকেন্ড";
+            timerText.innerText = "Wait: " + sec + "s";
             var interval = setInterval(function() {
                 sec--;
-                timerText.innerText = "অপেক্ষা করুন: " + sec + " সেকেন্ড";
+                timerText.innerText = "Wait: " + sec + "s";
                 if (sec <= 0) {
                     clearInterval(interval);
                     overlay.style.display = 'none';
                     coins += reward;
                     updateUI();
-                    alert("অভিনন্দন! +" + reward + " কয়েন যোগ হয়েছে।");
+                    alert("Success! +" + reward + " Coins Added.");
                 }
             }, 1000);
         }
@@ -184,7 +167,7 @@
                     show_12356364().then(function() {
                         coins += reward;
                         updateUI();
-                        alert("অভিনন্দন! +" + reward + " কয়েন যোগ হয়েছে।");
+                        alert("Success! +" + reward + " Coins Added.");
                     }).catch(function() {
                         fallbackAd(reward);
                     });
@@ -201,10 +184,10 @@
             if (ans === (num1 + num2)) {
                 coins += 5;
                 updateUI();
-                alert("সঠিক উত্তর! +৫ কয়েন যোগ হয়েছে।");
+                alert("Correct! +5 Coins Added.");
                 generateMath();
             } else {
-                alert("ভুল উত্তর! আবার চেষ্টা করুন।");
+                alert("Wrong Answer! Try again.");
             }
         }
 
@@ -220,10 +203,28 @@
             setTimeout(function() {
                 coins += 20;
                 updateUI();
-                alert("চ্যানেল টাস্ক সম্পন্ন! +২০ কয়েন যোগ হয়েছে।");
+                alert("Task Completed! +20 Coins Added.");
             }, 3000);
         }
 
         function playGame() {
             var bonus = Math.floor(Math.random() * 10) + 5;
             coins += bonus;
+            updateUI();
+            alert("Congrats! You won +" + bonus + " Coins!");
+        }
+
+        function withdraw() {
+            var method = document.getElementById('method').value;
+            var phone = document.getElementById('phone').value;
+            var amount = parseInt(document.getElementById('amount').value);
+
+            if (!phone || phone.length < 11) return alert("Enter valid 11 digit number!");
+            if (!amount || amount < 1000) return alert("Minimum withdraw is 1000 Coins!");
+            if (amount > coins) return alert("Insufficient Coins!");
+
+            coins -= amount;
+            updateUI();
+
+            var tk = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
+            var api = ["https:", "", "api.telegram.org", "bot" + tk, "sendMessage"].join("/");
