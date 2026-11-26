@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurePay BD</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
+        .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .header { text-align: center; background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .balance { font-size: 32px; font-weight: bold; color: #fbbf24; margin: 5px 0; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .btn-primary { background: #10b981; color: white; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-warn { background: #f59e0b; color: black; }
+        .task-row { display: flex; justify-content: space-between; align-items: center; }
+        input, select { width: 100%; padding: 10px; margin-top: 8px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; }
+        .nav button { background: none; border: none; color: #94a3b8; font-size: 15px; font-weight: bold; }
+        .nav button.active { color: #38bdf8; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="card header">
+        <div id="userName">স্বাগতম, ইউজার!</div>
+        <div class="balance"><span id="coins">0</span> কয়েন</div>
+        <small>১০০০ কয়েন = ১০ টাকা (বিকাশ / নগদ)</small>
+    </div>
+
+    <!-- Home / Tasks Section -->
+    <div id="homeTab">
+        <div class="card">
+            <div class="task-row">
+                <div><b>📺 সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+১৫ কয়েন)</small></div>
+                <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="watchAd()">দেখুন</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="task-row">
+                <div><b>🎬 ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে আয় (+১০ কয়েন)</small></div>
+                <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="watchVideo()">চালান</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <b>🧮 সহজ অংক সমাধান (+৫ কয়েন)</b>
+            <p id="mathQuestion" style="font-size:18px; margin:8px 0;">৫ + ৫ = কত?</p>
+            <input type="number" id="mathAnswer" placeholder="সঠিক উত্তর লিখুন">
+            <button class="btn btn-warn" onclick="checkMath()">উত্তর জমা দিন</button>
+        </div>
+
+        <div class="card">
+            <div class="task-row">
+                <div><b>📢 টেলিগ্রাম চ্যানেল টাস্ক</b><br><small>চ্যানেলের ভিডিওতে লাইক ও কমেন্ট (+২০ কয়েন)</small></div>
+                <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="channelTask()">যান</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="task-row">
+                <div><b>🎮 লাকি বক্স গেম</b><br><small>বক্স খুলে বোনাস জিতুন (+১০ কয়েন)</small></div>
+                <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="playGame()">খেলুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Section -->
+    <div id="withdrawTab" class="hidden">
+        <div class="card">
+            <h3>💸 টাকা উইথড্র করুন</h3>
+            <p><small>সর্বনিম্ন উইথড্র: ১০০০ কয়েন (১০ টাকা)</small></p>
+            <select id="method">
+                <option value="bKash">বিকাশ (bKash)</option>
+                <option value="Nagad">নগদ (Nagad)</option>
+            </select>
+            <input type="number" id="phone" placeholder="আপনার বিকাশ/নগদ নম্বর দিন">
+            <input type="number" id="amount" placeholder="কয়েনের পরিমাণ (যেমন: 1000)">
+            <button class="btn btn-primary" onclick="withdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav">
+        <button id="navHome" class="active" onclick="switchTab('home')">🏠 কাজসমূহ</button>
+        <button id="navWithdraw" onclick="switchTab('withdraw')">💳 উইথড্র</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let coins = parseInt(localStorage.getItem('surepay_coins')) || 0;
+        let num1 = 5, num2 = 5;
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
+        }
+
+        function updateUI() {
+            document.getElementById('coins').innerText = coins;
+            localStorage.setItem('surepay_coins', coins);
+        }
+
+        function generateMath() {
+            num1 = Math.floor(Math.random() * 15) + 1;
+            num2 = Math.floor(Math.random() * 15) + 1;
+            document.getElementById('mathQuestion').innerText = num1 + " + " + num2 + " = কত?";
+            document.getElementById('mathAnswer').value = '';
+        }
+
+        function watchAd() {
+            // এখানে পরবর্তীতে আপনার Monetag বা Adsgram কোড বসবে
+            alert("অ্যাড লোড হচ্ছে... ১৫ সেকেন্ড অপেক্ষা করুন।");
+            setTimeout(() => {
+                coins += 15;
+                updateUI();
+                alert("অভিনন্দন! অ্যাড দেখার জন্য ১৫ কয়েন যোগ হয়েছে।");
+            }, 2000);
+        }
+
+        function watchVideo() {
+            alert("ভিডিও চালু হচ্ছে... সম্পূর্ণ দেখুন।");
+            coins += 10;
+            updateUI();
+            alert("ভিডিও দেখার জন্য ১০ কয়েন পেয়েছেন!");
+        }
+
+        function checkMath() {
+            const ans = parseInt(document.getElementById('mathAnswer').value);
+            if (ans === (num1 + num2)) {
+                coins += 5;
+                updateUI();
+                alert("সঠিক উত্তর! +৫ কয়েন যোগ হয়েছে।");
+                generateMath();
+            } else {
+                alert("ভুল উত্তর! আবার চেষ্টা করুন।");
+            }
+        }
+
+        function channelTask() {
+            // আপনার টেলিগ্রাম চ্যানেলের লিংক নিচে বসাবেন
+            tg.openTelegramLink("https://t.me");
+            setTimeout(() => {
+                coins += 20;
+                updateUI();
+                alert("চ্যানেল টাস্ক সম্পন্ন! +২০ কয়েন যোগ হয়েছে।");
+            }, 3000);
+        }
+
+        function playGame() {
+            const bonus = Math.floor(Math.random() * 10) + 5;
+            coins += bonus;
+            updateUI();
+            alert("অভিনন্দন! গেম খেলে আপনি " + bonus + " কয়েন জিতেছেন!");
+        }
+
+        function withdraw() {
+            const method = document.getElementById('method').value;
+            const phone = document.getElementById('phone').value;
+            const amount = parseInt(document.getElementById('amount').value);
+
+            if (!phone || phone.length < 11) return alert("সঠিক ১১ ডিজিটের নম্বর দিন!");
+            if (!amount || amount < 1000) return alert("সর্বনিম্ন ১০০০ কয়েন উইথড্র করতে পারবেন!");
+            if (amount > coins) return alert("আপনার অ্যাকাউন্টে পর্যাপ্ত কয়েন নেই!");
+
+            coins -= amount;
+            updateUI();
+            alert(`সফল হয়েছে! ${method} (${phone}) নম্বরে ${amount} কয়েনের উইথড্র রিকোয়েস্ট পাঠানো হয়েছে।`);
+        }
+
+        function switchTab(tab) {
+            document.getElementById('homeTab').classList.toggle('hidden', tab !== 'home');
+            document.getElementById('withdrawTab').classList.toggle('hidden', tab !== 'withdraw');
+            document.getElementById('navHome').classList.toggle('active', tab === 'home');
+            document.getElementById('navWithdraw').classList.toggle('active', tab === 'withdraw');
+        }
+
+        updateUI();
+        generateMath();
+    </script>
+</body>
+</html>
