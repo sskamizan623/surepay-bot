@@ -79,7 +79,7 @@
         <div class="card" style="text-align:center;">
             <h3>👥 বন্ধুদের রেফার করুন</h3>
             <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে জিতে নিন +১০০ কয়েন!</p>
-            <p><small>আপনার নিচের রেফার লিংকটি কপি করে বন্ধুদের শেয়ার করুন। বন্ধু আপনার লিংকে ক্লিক করে বটে জয়েন করলেই বোনাস পাবেন।</small></p>
+            <p><small>আপনার নিচের রেফার লিংকটি কপি করে বন্ধুদের শেয়ার করুন।</small></p>
             <input type="text" id="refLink" readonly value="লোড হচ্ছে...">
             <button class="btn btn-blue" onclick="copyRef()">📋 রেফার লিংক কপি করুন</button>
             <button class="btn btn-primary" onclick="shareRef()">📤 টেলিগ্রামে শেয়ার করুন</button>
@@ -107,25 +107,26 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        if (tg) { tg.expand(); }
 
-        const BOT_USERNAME = "surepaybd_bot";
-        const BOT_TOKEN = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
-        const ADMIN_ID = "8577063798";
+        var BOT_USERNAME = "surepaybd_bot";
+        var BOT_TOKEN = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
+        var ADMIN_ID = "8577063798";
+        var CHANNEL_URL = "https:" + "//t.me/sskamizan1";
 
-        let coins = parseInt(localStorage.getItem('surepay_coins')) || 0;
-        let num1 = 5, num2 = 5;
-        let userId = "guest";
-        let userLabel = "Unknown User";
+        var coins = parseInt(localStorage.getItem('surepay_coins')) || 0;
+        var num1 = 5, num2 = 5;
+        var userId = "guest";
+        var userLabel = "Unknown User";
 
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             userId = tg.initDataUnsafe.user.id;
             userLabel = tg.initDataUnsafe.user.first_name + " (ID: " + userId + ")";
             document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
         }
 
-        const myRefLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
+        var myRefLink = "https:" + "//t.me/" + BOT_USERNAME + "?start=" + userId;
         document.getElementById('refLink').value = myRefLink;
 
         function updateUI() {
@@ -141,23 +142,24 @@
         }
 
         function copyRef() {
-            const copyText = document.getElementById("refLink");
+            var copyText = document.getElementById("refLink");
             copyText.select();
             document.execCommand("copy");
             alert("রেফার লিংক কপি হয়েছে!");
         }
 
         function shareRef() {
-            tg.openTelegramLink("https://t.meshare/url?url=" + encodeURIComponent(myRefLink));
+            var shareUrl = "https:" + "//t.me/share/url?url=" + encodeURIComponent(myRefLink);
+            if (tg) { tg.openTelegramLink(shareUrl); } else { window.open(shareUrl); }
         }
 
         function fallbackAd(reward) {
-            const overlay = document.getElementById('adOverlay');
-            const timerText = document.getElementById('adTimerText');
+            var overlay = document.getElementById('adOverlay');
+            var timerText = document.getElementById('adTimerText');
             overlay.style.display = 'flex';
-            let sec = 10;
+            var sec = 10;
             timerText.innerText = "অপেক্ষা করুন: " + sec + " সেকেন্ড";
-            const interval = setInterval(function() {
+            var interval = setInterval(function() {
                 sec--;
                 timerText.innerText = "অপেক্ষা করুন: " + sec + " সেকেন্ড";
                 if (sec <= 0) {
@@ -185,7 +187,7 @@
         }
 
         function checkMath() {
-            const ans = parseInt(document.getElementById('mathAnswer').value);
+            var ans = parseInt(document.getElementById('mathAnswer').value);
             if (ans === (num1 + num2)) {
                 coins += 5;
                 updateUI();
@@ -197,7 +199,7 @@
         }
 
         function channelTask() {
-            tg.openTelegramLink("https://t.mesurepaybd_bot");
+            if (tg) { tg.openTelegramLink(CHANNEL_URL); } else { window.open(CHANNEL_URL); }
             setTimeout(function() {
                 coins += 20;
                 updateUI();
@@ -206,15 +208,12 @@
         }
 
         function playGame() {
-            const bonus = Math.floor(Math.random() * 10) + 5;
+            var bonus = Math.floor(Math.random() * 10) + 5;
             coins += bonus;
             updateUI();
             alert("অভিনন্দন! গেম খেলে আপনি " + bonus + " কয়েন জিতেছেন!");
         }
 
         function withdraw() {
-            const method = document.getElementById('method').value;
-            const phone = document.getElementById('phone').value;
-            const amount = parseInt(document.getElementById('amount').value);
-
-            if (!phone || phone.length < 11) return alert("সঠিক ১১ ডিজিটের নম্বর দিন!");
+            var method = document.getElementById('method').value;
+            var phone = document.getElementById('phone').value;
