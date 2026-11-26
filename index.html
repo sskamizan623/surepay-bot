@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurePay BD</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
+    <script>
+        (function() {
+            var s1 = document.createElement('script');
+            s1.src = ["https:", "", "telegram.org", "js", "telegram-web-app.js"].join("/");
+            document.head.appendChild(s1);
+
+            var s2 = document.createElement('script');
+            s2.src = ["https:", "", "libtl.com", "sdk.js"].join("/");
+            s2.setAttribute("data-zone", "12356364");
+            s2.setAttribute("data-sdk", "show_12356364");
+            document.head.appendChild(s2);
+        })();
+    </script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
         .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
@@ -104,26 +115,34 @@
     </div>
 
     <script>
-        var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-        if (tg) { tg.expand(); }
+        var coins = 0;
+        try { coins = parseInt(localStorage.getItem('surepay_coins')) || 0; } catch(e) { coins = 0; }
 
-        var coins = parseInt(localStorage.getItem('surepay_coins')) || 0;
         var num1 = 5, num2 = 5;
         var userId = "guest";
         var userLabel = "Unknown";
 
-        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            userId = tg.initDataUnsafe.user.id;
-            userLabel = tg.initDataUnsafe.user.first_name + " (" + userId + ")";
-            document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
+        function initTg() {
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    var tg = window.Telegram.WebApp;
+                    tg.expand();
+                    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                        userId = tg.initDataUnsafe.user.id;
+                        userLabel = tg.initDataUnsafe.user.first_name + " (" + userId + ")";
+                        document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
+                        document.getElementById('refLink').value = ["https:", "", "t.me", "surepaybd_bot?start=" + userId].join("/");
+                    }
+                }
+            } catch(e) {}
         }
 
-        var p = ["https:", "", "t.me", "surepaybd_bot?start=" + userId];
-        document.getElementById('refLink').value = p.join("/");
+        document.getElementById('refLink').value = ["https:", "", "t.me", "surepaybd_bot?start=" + userId].join("/");
+        setTimeout(initTg, 1000);
 
         function updateUI() {
             document.getElementById('coins').innerText = coins;
-            localStorage.setItem('surepay_coins', coins);
+            try { localStorage.setItem('surepay_coins', coins); } catch(e) {}
         }
 
         function generateMath() {
@@ -160,15 +179,19 @@
         }
 
         function watchAd(reward) {
-            if (typeof show_12356364 === 'function') {
-                show_12356364().then(function() {
-                    coins += reward;
-                    updateUI();
-                    alert("অভিনন্দন! +" + reward + " কয়েন যোগ হয়েছে।");
-                }).catch(function() {
+            try {
+                if (typeof show_12356364 === 'function') {
+                    show_12356364().then(function() {
+                        coins += reward;
+                        updateUI();
+                        alert("অভিনন্দন! +" + reward + " কয়েন যোগ হয়েছে।");
+                    }).catch(function() {
+                        fallbackAd(reward);
+                    });
+                } else {
                     fallbackAd(reward);
-                });
-            } else {
+                }
+            } catch(e) {
                 fallbackAd(reward);
             }
         }
@@ -187,7 +210,13 @@
 
         function channelTask() {
             var ch = ["https:", "", "t.me", "sskamizan1"].join("/");
-            if (tg) { tg.openTelegramLink(ch); } else { window.open(ch); }
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.openTelegramLink(ch);
+                } else {
+                    window.open(ch);
+                }
+            } catch(e) { window.open(ch); }
             setTimeout(function() {
                 coins += 20;
                 updateUI();
@@ -198,26 +227,3 @@
         function playGame() {
             var bonus = Math.floor(Math.random() * 10) + 5;
             coins += bonus;
-            updateUI();
-            alert("অভিনন্দন! গেম খেলে আপনি " + bonus + " কয়েন জিতেছেন!");
-        }
-
-        function withdraw() {
-            var method = document.getElementById('method').value;
-            var phone = document.getElementById('phone').value;
-            var amount = parseInt(document.getElementById('amount').value);
-
-            if (!phone || phone.length < 11) return alert("সঠিক ১১ ডিজিটের নম্বর দিন!");
-            if (!amount || amount < 1000) return alert("সর্বনিম্ন ১০০০ কয়েন উইথড্র করতে পারবেন!");
-            if (amount > coins) return alert("পর্যাপ্ত কয়েন নেই!");
-
-            coins -= amount;
-            updateUI();
-
-            var tk = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
-            var api = ["https:", "", "api.telegram.org", "bot" + tk, "sendMessage"].join("/");
-            var msg = "উইথড্র রিকোয়েস্ট!\nইউজার: " + userLabel + "\nমাধ্যম: " + method + "\nনম্বর: " + phone + "\nকয়েন: " + amount;
-
-            fetch(api, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
