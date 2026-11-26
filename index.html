@@ -22,28 +22,43 @@ input,select{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px
 </head>
 <body>
 <div class="card header">
-<div id="uname">Welcome!</div>
-<div class="balance"><span id="c">0</span> Coins</div>
-<small>1000 Coins = 10 Taka</small>
+<div id="uname">স্বাগতম!</div>
+<div class="balance"><span id="c">0</span> কয়েন</div>
+<small>৮০,০০০ কয়েন = ১০০০ টাকা (বিকাশ / নগদ)</small>
 </div>
 <div id="t1">
-<div class="card row"><div><b>Watch Ad (+15)</b></div><button class="btn g" style="width:auto;padding:8px 15px" onclick="ad(15)">Watch</button></div>
-<div class="card row"><div><b>Channel Task (+20)</b></div><button class="btn b" style="width:auto;padding:8px 15px" onclick="ch()">Join</button></div>
-<div class="card"><b>Math: <span id="q">5+5</span> = ?</b><input type="number" id="ans"><button class="btn y" onclick="math()">Submit</button></div>
+<div class="card row"><div><b>📺 সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+১৫ কয়েন)</small></div><button class="btn g" style="width:auto;padding:8px 15px" onclick="ad(15)">দেখুন</button></div>
+<div class="card row"><div><b>🎬 চ্যানেল ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে লাইক ও কমেন্ট (+২০ কয়েন)</small></div><button class="btn b" style="width:auto;padding:8px 15px" onclick="ch()">ভিডিও দেখুন</button></div>
+<div class="card"><b>🧮 সহজ অংক: <span id="q">5+5</span> = ?</b><input type="number" id="ans" placeholder="সঠিক উত্তর লিখুন"><button class="btn y" onclick="math()">উত্তর জমা দিন</button></div>
 </div>
-<div id="t2" class="hide card"><h3>Refer (+100 Coins)</h3><input id="rl" readonly><button class="btn b" onclick="cp()">Copy Link</button></div>
-<div id="t3" class="hide card"><h3>Withdraw (Min 1000)</h3><select id="m"><option>bKash</option><option>Nagad</option></select><input id="p" placeholder="Number"><input id="a" placeholder="Coins"><button class="btn g" onclick="wd()">Withdraw</button></div>
-<div class="nav"><button onclick="tab(1)">Tasks</button><button onclick="tab(2)">Refer</button><button onclick="tab(3)">Withdraw</button></div>
+<div id="t2" class="hide card" style="text-align:center">
+<h3>👥 বন্ধুদের রেফার করুন</h3>
+<p style="color:#fbbf24;font-weight:bold">প্রতি রেফারে পাবেন +৫০০ কয়েন!</p>
+<input id="rl" readonly>
+<button class="btn b" onclick="cp()">📋 রেফার লিংক কপি করুন</button>
+</div>
+<div id="t3" class="hide card">
+<h3>💳 টাকা উইথড্র করুন</h3>
+<p><small id="wInfo">১ম উইথড্র: ৮০,০০০ কয়েন (১০০০ টাকা)<br>পরবর্তী উইথড্র: ৮,০০০ কয়েন (১০০ টাকা)</small></p>
+<select id="m"><option>bKash</option><option>Nagad</option></select>
+<input type="number" id="p" placeholder="বিকাশ / নগদ নম্বর দিন">
+<input type="number" id="a" placeholder="কয়েনের পরিমাণ (যেমন: 80000)">
+<button class="btn g" onclick="wd()">উইথড্র রিকোয়েস্ট পাঠান</button>
+</div>
+<div class="nav"><button onclick="tab(1)">🏠 কাজসমূহ</button><button onclick="tab(2)">👥 রেফার</button><button onclick="tab(3)">💳 উইথড্র</button></div>
 <script>
-var c=0,n1=5,n2=5,uid="guest";
-try{var tg=window.Telegram.WebApp;tg.expand();if(tg.initDataUnsafe.user){uid=tg.initDataUnsafe.user.id;document.getElementById('uname').innerText="Hi, "+tg.initDataUnsafe.user.first_name;}}catch(e){}
-document.getElementById('rl').value="https://t.me"+uid;
+var c=0,n1=5,n2=5,uid="guest",un="User",fw=false;
+try{c=parseInt(localStorage.getItem('sp_c'))||0;fw=localStorage.getItem('sp_fw')==='1';}catch(e){}
+try{var tg=window.Telegram.WebApp;tg.expand();if(tg.initDataUnsafe.user){uid=tg.initDataUnsafe.user.id;un=tg.initDataUnsafe.user.first_name;document.getElementById('uname').innerText="স্বাগতম, "+un;if(tg.initDataUnsafe.start_param&&tg.initDataUnsafe.start_param!=uid&&!localStorage.getItem('sp_rf')){localStorage.setItem('sp_rf','1');c+=500;alert("Referral Bonus +500 Coins Added!");}}}catch(e){}
+document.getElementById('c').innerText=c;
+document.getElementById('rl').value=["https:","","t.me","surepaybd_bot?start="+uid].join("/");
+function sv(){document.getElementById('c').innerText=c;try{localStorage.setItem('sp_c',c);}catch(e){}}
 function tab(x){document.getElementById('t1').className=x==1?'':'hide';document.getElementById('t2').className=x==2?'card':'hide card';document.getElementById('t3').className=x==3?'card':'hide card';}
-function ad(r){if(typeof show_12356364==='function'){show_12356364().then(function(){c+=r;document.getElementById('c').innerText=c;alert("+"+r+" Coins!");});}else{c+=r;document.getElementById('c').innerText=c;alert("+"+r+" Coins!");}}
-function ch(){window.open("https://t.me");c+=20;document.getElementById('c').innerText=c;alert("+20 Coins!");}
-function math(){if(parseInt(document.getElementById('ans').value)==(n1+n2)){c+=5;document.getElementById('c').innerText=c;n1=Math.floor(Math.random()*10)+1;n2=Math.floor(Math.random()*10)+1;document.getElementById('q').innerText=n1+"+"+n2;document.getElementById('ans').value='';alert("+5 Coins!");}else{alert("Wrong!");}}
-function cp(){var e=document.getElementById('rl');e.select();document.execCommand('copy');alert("Copied!");}
-function wd(){var a=parseInt(document.getElementById('a').value);if(a>=1000&&a<=c){c-=a;document.getElementById('c').innerText=c;alert("Request Sent!");}else{alert("Min 1000 Coins!");}}
+function ad(r){if(typeof show_12356364==='function'){show_12356364().then(function(){c+=r;sv();alert("+"+r+" Coins Added!");});}else{c+=r;sv();alert("+"+r+" Coins Added!");}}
+function ch(){var u=["https:","","t.me","sskamizan1"].join("/");try{window.Telegram.WebApp.openTelegramLink(u);}catch(e){window.open(u);}setTimeout(function(){c+=20;sv();alert("+20 Coins Added!");},4000);}
+function math(){if(parseInt(document.getElementById('ans').value)==(n1+n2)){c+=5;sv();n1=Math.floor(Math.random()*10)+1;n2=Math.floor(Math.random()*10)+1;document.getElementById('q').innerText=n1+"+"+n2;document.getElementById('ans').value='';alert("+5 Coins Added!");}else{alert("Wrong Answer!");}}
+function cp(){var e=document.getElementById('rl');e.select();document.execCommand('copy');alert("Referral Link Copied!");}
+function wd(){var min=fw?8000:80000;var a=parseInt(document.getElementById('a').value);var p=document.getElementById('p').value;var m=document.getElementById('m').value;if(p.length<11)return alert("Enter valid 11 digit number!");if(isNaN(a)||a<min)return alert("Minimum withdraw is "+min+" Coins!");if(a>c)return alert("Insufficient Coins!");c-=a;fw=true;try{localStorage.setItem('sp_fw','1');}catch(e){}sv();var tk="8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";var api=["https:","","api.telegram.org","bot"+tk,"sendMessage"].join("/");fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:"8577063798",text:"Withdraw: "+un+" ("+uid+") | "+m+": "+p+" | Coins: "+a})});alert("Withdraw Request Sent Successfully!");}
 </script>
 </body>
 </html>
