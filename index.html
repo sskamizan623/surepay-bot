@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurePay BD</title>
     <script src="https://telegram.org"></script>
+    <script src='//://libtl.com' data-zone='12356364' data-sdk='show_12356364'></script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
         .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
@@ -95,8 +96,10 @@
 
         let coins = parseInt(localStorage.getItem('surepay_coins')) || 0;
         let num1 = 5, num2 = 5;
+        let userLabel = "Unknown User";
 
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            userLabel = tg.initDataUnsafe.user.first_name + " (ID: " + tg.initDataUnsafe.user.id + ")";
             document.getElementById('userName').innerText = "স্বাগতম, " + tg.initDataUnsafe.user.first_name;
         }
 
@@ -113,20 +116,31 @@
         }
 
         function watchAd() {
-            // এখানে পরবর্তীতে আপনার Monetag বা Adsgram কোড বসবে
-            alert("অ্যাড লোড হচ্ছে... ১৫ সেকেন্ড অপেক্ষা করুন।");
-            setTimeout(() => {
-                coins += 15;
-                updateUI();
-                alert("অভিনন্দন! অ্যাড দেখার জন্য ১৫ কয়েন যোগ হয়েছে।");
-            }, 2000);
+            if (typeof show_12356364 === 'function') {
+                show_12356364().then(() => {
+                    coins += 15;
+                    updateUI();
+                    alert("অভিনন্দন! অ্যাড দেখার জন্য +১৫ কয়েন যোগ হয়েছে।");
+                }).catch(() => {
+                    alert("এই মুহূর্তে অ্যাড লোড হয়নি, কয়েক সেকেন্ড পর আবার চেষ্টা করুন।");
+                });
+            } else {
+                alert("অ্যাড লোড হচ্ছে, একটু পর আবার ক্লিক করুন।");
+            }
         }
 
         function watchVideo() {
-            alert("ভিডিও চালু হচ্ছে... সম্পূর্ণ দেখুন।");
-            coins += 10;
-            updateUI();
-            alert("ভিডিও দেখার জন্য ১০ কয়েন পেয়েছেন!");
+            if (typeof show_12356364 === 'function') {
+                show_12356364().then(() => {
+                    coins += 10;
+                    updateUI();
+                    alert("ভিডিও দেখার জন্য +১০ কয়েন পেয়েছেন!");
+                });
+            } else {
+                coins += 10;
+                updateUI();
+                alert("ভিডিও দেখার জন্য +১০ কয়েন পেয়েছেন!");
+            }
         }
 
         function checkMath() {
@@ -142,7 +156,6 @@
         }
 
         function channelTask() {
-            // আপনার টেলিগ্রাম চ্যানেলের লিংক নিচে বসাবেন
             tg.openTelegramLink("https://t.me");
             setTimeout(() => {
                 coins += 20;
@@ -169,7 +182,9 @@
 
             coins -= amount;
             updateUI();
-            alert(`সফল হয়েছে! ${method} (${phone}) নম্বরে ${amount} কয়েনের উইথড্র রিকোয়েস্ট পাঠানো হয়েছে।`);
+
+            const taka = (amount / 100).toFixed(0);
+            alert(`সফল হয়েছে! ${method} (${phone}) নম্বরে ${amount} কয়েন (${taka} টাকা) উইথড্র রিকোয়েস্ট পাঠানো হয়েছে।`);
         }
 
         function switchTab(tab) {
