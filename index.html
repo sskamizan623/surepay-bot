@@ -1,230 +1,49 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurePay BD</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
-    <style>
-        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; padding-bottom: 70px; }
-        .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
-        .header { text-align: center; background: #1d4ed8; }
-        .balance { font-size: 32px; font-weight: bold; color: #fbbf24; margin: 5px 0; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        .btn-primary { background: #10b981; color: white; }
-        .btn-blue { background: #3b82f6; color: white; }
-        .btn-warn { background: #f59e0b; color: black; }
-        .task-row { display: flex; justify-content: space-between; align-items: center; }
-        input, select { width: 100%; padding: 10px; margin-top: 8px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
-        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; }
-        .nav button { background: none; border: none; color: #94a3b8; font-size: 14px; font-weight: bold; }
-        .nav button.active { color: #38bdf8; }
-        .hidden { display: none; }
-        #adOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SurePay BD</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://libtl.com/sdk.js" data-zone="12356364" data-sdk="show_12356364"></script>
+<style>
+body{font-family:sans-serif;background:#0f172a;color:#fff;margin:0;padding:15px;padding-bottom:70px}
+.card{background:#1e293b;border-radius:12px;padding:15px;margin-bottom:12px}
+.header{text-align:center;background:#1d4ed8}
+.balance{font-size:30px;font-weight:bold;color:#fbbf24;margin:5px 0}
+.btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:bold;margin-top:8px}
+.g{background:#10b981;color:#fff}.b{background:#3b82f6;color:#fff}.y{background:#f59e0b;color:#000}
+.row{display:flex;justify-content:space-between;align-items:center}
+input,select{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#fff;box-sizing:border-box}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#1e293b;display:flex;justify-content:space-around;padding:12px 0}
+.nav button{background:none;border:none;color:#38bdf8;font-size:15px;font-weight:bold}
+.hide{display:none}
+</style>
 </head>
 <body>
-
-    <div id="adOverlay">
-        <h2 style="color:#fbbf24;">Ad is Playing...</h2>
-        <p id="adTimerText" style="font-size:20px;">Wait: 10s</p>
-    </div>
-
-    <div class="card header">
-        <div id="userName">Welcome, User!</div>
-        <div class="balance"><span id="coins">0</span> Coins</div>
-        <small>1000 Coins = 10 Taka (bKash / Nagad)</small>
-    </div>
-
-    <div id="homeTab">
-        <div class="card">
-            <div class="task-row">
-                <div><b>সরাসরি অ্যাড দেখুন</b><br><small>১ ক্লিকে অ্যাড (+15 Coins)</small></div>
-                <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="watchAd(15)">দেখুন</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="task-row">
-                <div><b>ভিডিও ওয়াচিং</b><br><small>ভিডিও দেখে আয় (+10 Coins)</small></div>
-                <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="watchAd(10)">চালান</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <b>সহজ অংক সমাধান (+5 Coins)</b>
-            <p id="mathQuestion" style="font-size:18px; margin:8px 0;">5 + 5 = ?</p>
-            <input type="number" id="mathAnswer" placeholder="সঠিক উত্তর লিখুন">
-            <button class="btn btn-warn" onclick="checkMath()">উত্তর জমা দিন</button>
-        </div>
-
-        <div class="card">
-            <div class="task-row">
-                <div><b>টেলিগ্রাম চ্যানেল টাস্ক</b><br><small>চ্যানেলে জয়েন ও ভিজিট (+20 Coins)</small></div>
-                <button class="btn btn-blue" style="width:auto; padding:8px 15px;" onclick="channelTask()">যান</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="task-row">
-                <div><b>লাকি বক্স গেম</b><br><small>বক্স খুলে বোনাস জিতুন (+10 Coins)</small></div>
-                <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="playGame()">খেলুন</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="referTab" class="hidden">
-        <div class="card" style="text-align:center;">
-            <h3>বন্ধুদের রেফার করুন</h3>
-            <p style="color:#fbbf24; font-weight:bold;">প্রতি রেফারে +100 Coins!</p>
-            <input type="text" id="refLink" readonly>
-            <button class="btn btn-blue" onclick="copyRef()">রেফার লিংক কপি করুন</button>
-        </div>
-    </div>
-
-    <div id="withdrawTab" class="hidden">
-        <div class="card">
-            <h3>টাকা উইথড্র করুন</h3>
-            <p><small>সর্বনিম্ন উইথড্র: 1000 Coins (10 Taka)</small></p>
-            <select id="method">
-                <option value="bKash">বিকাশ (bKash)</option>
-                <option value="Nagad">নগদ (Nagad)</option>
-            </select>
-            <input type="number" id="phone" placeholder="আপনার বিকাশ/নগদ নম্বর দিন">
-            <input type="number" id="amount" placeholder="কয়েনের পরিমাণ (যেমন: 1000)">
-            <button class="btn btn-primary" onclick="withdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
-        </div>
-    </div>
-
-    <div class="nav">
-        <button id="navHome" class="active" onclick="switchTab('home')">কাজসমূহ</button>
-        <button id="navRefer" onclick="switchTab('refer')">রেফার</button>
-        <button id="navWithdraw" onclick="switchTab('withdraw')">উইথড্র</button>
-    </div>
-
-    <script>
-        var coins = 0;
-        var num1 = 5;
-        var num2 = 5;
-        var userId = "guest";
-        var userLabel = "User";
-
-        try {
-            if (window.Telegram && window.Telegram.WebApp) {
-                var tg = window.Telegram.WebApp;
-                tg.expand();
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    userId = tg.initDataUnsafe.user.id;
-                    userLabel = tg.initDataUnsafe.user.first_name + " (" + userId + ")";
-                    document.getElementById('userName').innerText = "Welcome, " + tg.initDataUnsafe.user.first_name;
-                }
-            }
-        } catch(e) {}
-
-        document.getElementById('refLink').value = ["https:", "", "t.me", "surepaybd_bot?start=" + userId].join("/");
-
-        function updateUI() {
-            document.getElementById('coins').innerText = coins;
-        }
-
-        function generateMath() {
-            num1 = Math.floor(Math.random() * 15) + 1;
-            num2 = Math.floor(Math.random() * 15) + 1;
-            document.getElementById('mathQuestion').innerText = num1 + " + " + num2 + " = ?";
-            document.getElementById('mathAnswer').value = '';
-        }
-
-        function copyRef() {
-            var copyText = document.getElementById("refLink");
-            copyText.select();
-            document.execCommand("copy");
-            alert("Referral Link Copied!");
-        }
-
-        function fallbackAd(reward) {
-            var overlay = document.getElementById('adOverlay');
-            var timerText = document.getElementById('adTimerText');
-            overlay.style.display = 'flex';
-            var sec = 10;
-            timerText.innerText = "Wait: " + sec + "s";
-            var interval = setInterval(function() {
-                sec--;
-                timerText.innerText = "Wait: " + sec + "s";
-                if (sec <= 0) {
-                    clearInterval(interval);
-                    overlay.style.display = 'none';
-                    coins += reward;
-                    updateUI();
-                    alert("Success! +" + reward + " Coins Added.");
-                }
-            }, 1000);
-        }
-
-        function watchAd(reward) {
-            try {
-                if (typeof show_12356364 === 'function') {
-                    show_12356364().then(function() {
-                        coins += reward;
-                        updateUI();
-                        alert("Success! +" + reward + " Coins Added.");
-                    }).catch(function() {
-                        fallbackAd(reward);
-                    });
-                } else {
-                    fallbackAd(reward);
-                }
-            } catch(e) {
-                fallbackAd(reward);
-            }
-        }
-
-        function checkMath() {
-            var ans = parseInt(document.getElementById('mathAnswer').value);
-            if (ans === (num1 + num2)) {
-                coins += 5;
-                updateUI();
-                alert("Correct! +5 Coins Added.");
-                generateMath();
-            } else {
-                alert("Wrong Answer! Try again.");
-            }
-        }
-
-        function channelTask() {
-            var ch = ["https:", "", "t.me", "sskamizan1"].join("/");
-            try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.openTelegramLink(ch);
-                } else {
-                    window.open(ch);
-                }
-            } catch(e) { window.open(ch); }
-            setTimeout(function() {
-                coins += 20;
-                updateUI();
-                alert("Task Completed! +20 Coins Added.");
-            }, 3000);
-        }
-
-        function playGame() {
-            var bonus = Math.floor(Math.random() * 10) + 5;
-            coins += bonus;
-            updateUI();
-            alert("Congrats! You won +" + bonus + " Coins!");
-        }
-
-        function withdraw() {
-            var method = document.getElementById('method').value;
-            var phone = document.getElementById('phone').value;
-            var amount = parseInt(document.getElementById('amount').value);
-
-            if (!phone || phone.length < 11) return alert("Enter valid 11 digit number!");
-            if (!amount || amount < 1000) return alert("Minimum withdraw is 1000 Coins!");
-            if (amount > coins) return alert("Insufficient Coins!");
-
-            coins -= amount;
-            updateUI();
-
-            var tk = "8516159160:AAHg6f6X09f8C-A0w0x5V6Z1w4z5w9_0x0";
-            var api = ["https:", "", "api.telegram.org", "bot" + tk, "sendMessage"].join("/");
+<div class="card header">
+<div id="uname">Welcome!</div>
+<div class="balance"><span id="c">0</span> Coins</div>
+<small>1000 Coins = 10 Taka</small>
+</div>
+<div id="t1">
+<div class="card row"><div><b>Watch Ad (+15)</b></div><button class="btn g" style="width:auto;padding:8px 15px" onclick="ad(15)">Watch</button></div>
+<div class="card row"><div><b>Channel Task (+20)</b></div><button class="btn b" style="width:auto;padding:8px 15px" onclick="ch()">Join</button></div>
+<div class="card"><b>Math: <span id="q">5+5</span> = ?</b><input type="number" id="ans"><button class="btn y" onclick="math()">Submit</button></div>
+</div>
+<div id="t2" class="hide card"><h3>Refer (+100 Coins)</h3><input id="rl" readonly><button class="btn b" onclick="cp()">Copy Link</button></div>
+<div id="t3" class="hide card"><h3>Withdraw (Min 1000)</h3><select id="m"><option>bKash</option><option>Nagad</option></select><input id="p" placeholder="Number"><input id="a" placeholder="Coins"><button class="btn g" onclick="wd()">Withdraw</button></div>
+<div class="nav"><button onclick="tab(1)">Tasks</button><button onclick="tab(2)">Refer</button><button onclick="tab(3)">Withdraw</button></div>
+<script>
+var c=0,n1=5,n2=5,uid="guest";
+try{var tg=window.Telegram.WebApp;tg.expand();if(tg.initDataUnsafe.user){uid=tg.initDataUnsafe.user.id;document.getElementById('uname').innerText="Hi, "+tg.initDataUnsafe.user.first_name;}}catch(e){}
+document.getElementById('rl').value="https://t.me"+uid;
+function tab(x){document.getElementById('t1').className=x==1?'':'hide';document.getElementById('t2').className=x==2?'card':'hide card';document.getElementById('t3').className=x==3?'card':'hide card';}
+function ad(r){if(typeof show_12356364==='function'){show_12356364().then(function(){c+=r;document.getElementById('c').innerText=c;alert("+"+r+" Coins!");});}else{c+=r;document.getElementById('c').innerText=c;alert("+"+r+" Coins!");}}
+function ch(){window.open("https://t.me");c+=20;document.getElementById('c').innerText=c;alert("+20 Coins!");}
+function math(){if(parseInt(document.getElementById('ans').value)==(n1+n2)){c+=5;document.getElementById('c').innerText=c;n1=Math.floor(Math.random()*10)+1;n2=Math.floor(Math.random()*10)+1;document.getElementById('q').innerText=n1+"+"+n2;document.getElementById('ans').value='';alert("+5 Coins!");}else{alert("Wrong!");}}
+function cp(){var e=document.getElementById('rl');e.select();document.execCommand('copy');alert("Copied!");}
+function wd(){var a=parseInt(document.getElementById('a').value);if(a>=1000&&a<=c){c-=a;document.getElementById('c').innerText=c;alert("Request Sent!");}else{alert("Min 1000 Coins!");}}
+</script>
+</body>
+</html>
